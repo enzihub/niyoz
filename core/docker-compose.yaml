@@ -1,0 +1,47 @@
+services:
+  web:
+    build: .
+    env_file: .env
+    environment:
+      - PORT=8000
+      - HOST=0.0.0.0
+    ports:
+      - "8000:8000"
+    depends_on:
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8000/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  celery_worker:
+    build: .
+    command: celery -A app.core.scheduler.job_tasks worker --loglevel=info
+    env_file: .env
+    depends_on:
+      - redis
+
+  celery_beat:
+    build: .
+    command: celery -A app.core.scheduler.job_tasks beat --loglevel=info
+    env_file: .env
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:alpine
+    expose:
+      - "6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  redis-data:

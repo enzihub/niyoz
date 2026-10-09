@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <style>
+        body {
+            font-family: Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-size: 15px;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            line-height: 22px;
+            color: #000000;
+        }
+        .main-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+        }
+        .meta-header {
+            padding: 11px 20px;
+            text-align: right;
+            font-size: 12px;
+            color: #999999;
+        }
+        .header {
+            text-align: center;
+            padding: 20px;
+            border-bottom: 2px solid #000000;
+        }
+        .logo {
+            width: 155px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            font-family: Georgia, Times, "Times New Roman", serif;
+            font-size: 32px;
+            margin: 0;
+            font-weight: normal;
+            color: #000000;
+        }
+        .header p {
+            color: #666666;
+            margin: 10px 0 0;
+            font-size: 14px;
+        }
+        .intro-text {
+            margin: 20px 0;
+            line-height: 1.6;
+        }
+        .share-section {
+            margin: 20px 0;
+            color: #666666;
+        }
+        .share-section a {
+            color: #0066cc;
+            text-decoration: underline;
+        }
+        .section-title {
+            font-family: Georgia, Times, "Times New Roman", serif;
+            font-size: 23px;
+            line-height: 32px;
+            padding: 2px 8px;
+            display: inline-block;
+            margin: 20px 0 10px 20px;
+        }
+        .yellow-bg {
+            background-color: #efef6f;
+        }
+        .divider {
+            border-top: 2px solid #000000;
+            margin: 10px 20px;
+        }
+        .content-section {
+            padding: 0 20px 20px;
+        }
+        .video-card {
+            margin-bottom: 30px;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 20px;
+        }
+        .video-title {
+            font-family: Georgia, Times, "Times New Roman", serif;
+            font-size: 20px;
+            margin: 0 0 15px;
+            font-weight: normal;
+        }
+        .video-summary {
+            margin: 15px 0;
+            line-height: 1.6;
+        }
+        .cta-button {
+            display: inline-block;
+            background-color: #000000;
+            color: #ffffff !important;
+            text-decoration: none;
+            padding: 8px 16px;
+            font-size: 14px;
+            margin: 10px 0;
+        }
+        .video-url {
+            font-size: 14px;
+            color: #666666;
+            word-break: break-all;
+        }
+        .footer {
+            background-color: #000000;
+            color: #ffffff;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        .footer-info {
+            background-color: #ffffff;
+            padding: 20px;
+            text-align: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .unsubscribe {
+            color: #666666;
+            font-size: 10px;
+            margin-top: 10px;
+        }
+
+        a {
+            text-decoration: underline;
+        }
+        .video-thumb {
+            width: 100%;
+            border-radius: 8px;
+            display: block;
+            margin-bottom: 12px;
+        }
+        .video-channel {
+            margin: -6px 0 10px;
+            font-size: 13px;
+            color: #666666;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <!-- Header -->
+        <div class="header">
+            {% if logo_data %}
+            <img src="{{ logo_data }}" alt="Niyoz" class="logo">
+            {% endif %}
+            <h1>{{ title }}</h1>
+            <p>{{ timestamp }}</p>
+        </div>
+
+        <!-- Introduction -->
+        <div class="content-section">
+            <div class="intro-text">
+                <p><b>Happy {{ day_of_week }}!</b> It's {{ date }}, and today on your YouTube homepage, we're highlighting an exciting lineup of videos: {{ video_title_summary }}. {% if app_url %}First time reading? <a href="{{ app_url }}">Sign up here.</a>{% endif %}</p>
+            </div>
+            {% if app_url or contact_email %}
+            <div class="share-section">
+                {% if app_url %}<p>Enjoying Niyoz? <a href="mailto:?subject=Check%20out%20Niyoz&body={{ app_url | urlencode }}">Share it with a friend</a>.</p>{% endif %}
+                {% if contact_email %}<p>Got ideas or feedback? Write to <a href="mailto:{{ contact_email }}">{{ contact_email }}</a>.</p>{% endif %}
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Video Summaries Section -->
+        <div class="section-title yellow-bg">Today's Videos</div>
+        <div class="divider"></div>
+        <div class="content-section">
+            {% for video in video_summaries %}
+            <div class="video-card">
+                {% if video.thumbnail_url %}<a href="{{ video.video_url }}"><img src="{{ video.thumbnail_url }}" alt="" class="video-thumb"></a>{% endif %}
+                <h2 class="video-title">{{ video.video_title }}</h2>
+                {% if video.channel_name %}<p class="video-channel">{{ video.channel_name }}</p>{% endif %}
+                <div class="video-summary">{{ video.summary | safe }}</div>
+                <a href="{{ video.video_url }}" class="cta-button">Watch Video ▶️</a>
+                <div class="video-url">
+                    <a href="{{ video.video_url }}">{{ video.video_url }}</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Footer -->
+        <div class="footer-info">
+            {% if not is_premium %}
+            <p>Love what we do and need more than 3 videos a day? Support us with a monthly coffee +  cake ($8/month) to help cover hosting and LLM costs—every bit makes a difference. 💛 Thank you! 😊 <br/> {% if app_url %}<a href="{{ app_url }}/pricing">Click here to upgrade to 12 video summaries per day!</a>{% endif %}</p>
+            {% endif %}
+
+            <div class="unsubscribe">
+                {% if app_url %}<p>Want to unsubscribe? <a href="{{ app_url }}/profile">Manage your preferences here</a></p>{% endif %}
+            </div>
+        </div>
+
+
+    </div>
+</body>
+</html>
