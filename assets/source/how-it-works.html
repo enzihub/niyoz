@@ -1,0 +1,41 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+@font-face{font-family:"Inter";src:url(../../docs/fonts/inter-var.woff2) format("woff2");font-weight:100 900}
+@font-face{font-family:"Instrument Serif";src:url(../../docs/fonts/instrument-serif-400.woff2) format("woff2")}
+@font-face{font-family:"Instrument Serif";font-style:italic;src:url(../../docs/fonts/instrument-serif-400-italic.woff2) format("woff2")}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:transparent}
+body{font-family:Inter,sans-serif;color:#0B2545;-webkit-font-smoothing:antialiased}
+.card{position:relative;overflow:hidden;border-radius:28px;background:#EAF7FF;
+ background-image:radial-gradient(900px 500px at 85% 10%,rgba(0,89,255,.16),transparent 60%),radial-gradient(700px 420px at 0% 100%,rgba(255,214,102,.28),transparent 60%);}
+.brand{display:flex;align-items:center;gap:10px;font-weight:750;font-size:26px;letter-spacing:-.02em;color:#0D4785}
+.brand img{width:34px;height:auto}
+.serif{font-family:"Instrument Serif",serif;font-weight:400;letter-spacing:-.01em}
+.shot{border-radius:14px;overflow:hidden;background:#fff;box-shadow:0 1px 0 rgba(11,37,69,.06),0 24px 60px -18px rgba(11,37,69,.35);border:1px solid rgba(11,37,69,.08)}
+.shot .bar{height:26px;background:#F3F6FA;border-bottom:1px solid #E3E9F1;display:flex;align-items:center;gap:6px;padding:0 12px}
+.shot .bar i{width:9px;height:9px;border-radius:50%;background:#D5DDE7;display:block}
+.shot img{display:block;width:100%}
+
+.card{width:1000px;height:470px;padding:40px 44px}
+h2{font-size:34px;line-height:1.1;margin-bottom:6px}
+.lead{color:#33506F;font-size:15px;margin-bottom:28px}
+.flow{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;position:relative}
+.step{background:#fff;border:1px solid rgba(13,71,133,.12);border-radius:18px;padding:18px 16px 16px;position:relative;box-shadow:0 14px 34px -22px rgba(11,37,69,.45);min-height:250px}
+.n{width:30px;height:30px;border-radius:50%;background:#0059FF;color:#fff;font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+.step h3{font-size:16.5px;font-weight:700;margin-bottom:6px;letter-spacing:-.01em}
+.step p{font-size:13px;line-height:1.5;color:#3E5A79}
+.tech{position:absolute;left:16px;right:16px;bottom:14px;display:flex;gap:5px;flex-wrap:wrap}
+.tech span{font-size:10.5px;font-weight:650;color:#0D4785;background:#EEF5FF;border-radius:6px;padding:3px 7px}
+.arrow{position:absolute;top:50%;right:-14px;width:12px;height:12px;transform:translateY(-50%) rotate(45deg);border-top:3.5px solid #0059FF;border-right:3.5px solid #0059FF;z-index:2;background:transparent}
+.thumbs{display:flex;gap:5px;margin:12px 0 0}
+.thumbs img{width:56px;height:32px;object-fit:cover;border-radius:6px}
+</style></head><body><div class="card">
+<h2 class="serif">How it works</h2>
+<div class="lead">Every hour a scheduler finds who is due, builds their digest, and queues it for the hour they picked.</div>
+<div class="flow">
+ <div class="step"><div class="n">1</div><h3>Pick an hour</h3><p>Sign in with Google and choose when the email lands. Your time zone is saved with it.</p><div class="tech"><span>Next.js</span><span>Clerk</span><span>Postgres</span></div><div class="arrow"></div></div>
+ <div class="step"><div class="n">2</div><h3>Read the homepage</h3><p>The worker fetches your YouTube recommendations and each video's transcript.</p>
+  <div class="thumbs"><img src="../../docs/demo-thumbs/synth.jpg"><img src="../../docs/demo-thumbs/ramen.jpg"><img src="../../docs/demo-thumbs/run.jpg"></div>
+  <div class="tech"><span>Celery beat</span><span>YouTube</span></div><div class="arrow"></div></div>
+ <div class="step"><div class="n">3</div><h3>Summarize</h3><p>An LLM writes a short summary per video, a subject line and a one-line overview.</p><div class="tech"><span>OpenAI</span><span>Jinja2</span></div><div class="arrow"></div></div>
+ <div class="step"><div class="n">4</div><h3>Deliver on time</h3><p>The email waits in a Redis queue and goes out at your hour. Free plan: 3 videos. Paid plan: 12.</p><div class="tech"><span>Redis</span><span>Mailtrap</span><span>Stripe</span></div></div>
+</div></div></body></html>

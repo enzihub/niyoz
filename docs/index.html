@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Niyoz · Your YouTube homepage, read in five minutes</title>
+<meta name="description" content="Niyoz summarises the videos YouTube recommends to you and emails one tidy digest at the hour you pick. Open source by Enzi Studio.">
+<meta property="og:title" content="Niyoz">
+<meta property="og:description" content="Your YouTube homepage, read in five minutes. Open source by Enzi Studio.">
+<meta property="og:image" content="og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#EAF7FF">
+<link rel="icon" href="img/niyoz-mark.png">
+<style>
+@font-face { font-family: Inter; font-weight: 100 900; font-display: swap; src: url(fonts/inter-var.woff2) format('woff2'); }
+@font-face { font-family: 'Instrument Serif'; font-weight: 400; font-display: swap; src: url(fonts/instrument-serif-400.woff2) format('woff2'); }
+@font-face { font-family: 'Instrument Serif'; font-style: italic; font-weight: 400; font-display: swap; src: url(fonts/instrument-serif-400-italic.woff2) format('woff2'); }
+:root {
+  --ink: #0B2545; --navy: #0D4785; --blue: #0059FF; --muted: #3E5A79; --soft: #EAF7FF;
+  --paper: #F7FBFF; --sun: #FFD666; --line: rgba(11, 37, 69, .1);
+  --serif: 'Instrument Serif', Georgia, serif; --sans: Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { font-family: var(--sans); color: var(--ink); background: var(--paper); line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+img { max-width: 100%; height: auto; display: block; }
+a { color: var(--blue); }
+.wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+.serif { font-family: var(--serif); font-weight: 400; letter-spacing: -.01em; }
+
+.glow { position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background: radial-gradient(900px 520px at 85% -5%, rgba(0, 89, 255, .14), transparent 65%),
+              radial-gradient(760px 480px at -5% 45%, rgba(255, 214, 102, .22), transparent 65%), var(--soft); }
+
+nav { position: sticky; top: 0; z-index: 10; backdrop-filter: blur(10px); background: rgba(234, 247, 255, .94); border-bottom: 1px solid var(--line); box-shadow: 0 6px 20px -16px rgba(11, 37, 69, .5); }
+nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 64px; gap: 16px; }
+.brand { display: flex; align-items: center; gap: 9px; font-weight: 750; font-size: 1.3rem; letter-spacing: -.02em; color: var(--navy); text-decoration: none; }
+.brand img { width: 26px; }
+.links { display: flex; gap: 22px; align-items: center; }
+.links a { color: var(--ink); text-decoration: none; font-size: .95rem; opacity: .8; }
+.links a:hover { opacity: 1; color: var(--blue); }
+.btn { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 10px 20px; border-radius: 999px; font-weight: 650; font-size: .95rem; text-decoration: none; border: 1px solid rgba(13, 71, 133, .2); color: var(--navy); background: rgba(255, 255, 255, .7); transition: transform .15s, box-shadow .2s; }
+.btn:hover { transform: translateY(-1px); box-shadow: 0 10px 26px -12px rgba(0, 89, 255, .55); }
+.btn.primary { background: var(--blue); color: #fff; border-color: var(--blue); box-shadow: 0 12px 30px -12px rgba(0, 89, 255, .7); }
+
+header.hero { padding: 72px 0 40px; }
+.hero .wrap { display: grid; grid-template-columns: 1fr 1.05fr; gap: 48px; align-items: center; }
+.eyebrow { display: inline-block; font-size: .8rem; font-weight: 650; letter-spacing: .04em; color: var(--navy); background: rgba(255, 255, 255, .75); border: 1px solid var(--line); padding: 6px 12px; border-radius: 999px; }
+h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(2.8rem, 6vw, 4.6rem); line-height: 1; margin: 22px 0 18px; letter-spacing: -.015em; }
+h1 em { color: var(--blue); }
+.lede { font-size: 1.12rem; color: var(--muted); max-width: 480px; }
+.typed { margin-top: 18px; font-size: 1rem; color: var(--navy); min-height: 1.6em; }
+.typed b { font-weight: 650; }
+.caret { display: inline-block; width: 2px; height: 1.1em; background: var(--blue); vertical-align: -3px; margin-left: 2px; animation: blink 1s steps(1) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+.cta { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 28px; }
+.shot { border-radius: 16px; overflow: hidden; background: #fff; border: 1px solid var(--line); box-shadow: 0 30px 70px -28px rgba(11, 37, 69, .45); }
+.shot .bar { height: 28px; background: #F3F6FA; border-bottom: 1px solid #E3E9F1; display: flex; align-items: center; gap: 6px; padding: 0 12px; }
+.shot .bar i { width: 9px; height: 9px; border-radius: 50%; background: #D5DDE7; display: block; }
+.hero .shot { transform: rotate(-1.5deg); position: relative; }
+.hero .shot::after { content: ''; position: absolute; inset: -40px; z-index: -1; background: radial-gradient(closest-side, rgba(0, 89, 255, .25), transparent); filter: blur(10px); }
+
+section { padding: 64px 0; scroll-margin-top: 64px; }
+h2 { font-family: var(--serif); font-weight: 400; font-size: clamp(2.1rem, 4.2vw, 3rem); line-height: 1.05; margin-bottom: 14px; }
+.sub { color: var(--muted); max-width: 640px; font-size: 1.05rem; }
+.center { text-align: center; }
+.center .sub { margin: 0 auto; }
+.demo { margin: 36px auto 0; max-width: 900px; }
+.demo figcaption, .note { font-size: .85rem; color: var(--muted); margin-top: 12px; text-align: center; }
+
+.feature { display: grid; grid-template-columns: 1fr 1.25fr; gap: 48px; align-items: center; margin-top: 56px; }
+.feature.flip { grid-template-columns: 1.25fr 1fr; }
+.feature.flip .text { order: 2; }
+.feature h3 { font-size: 1.45rem; letter-spacing: -.02em; margin-bottom: 10px; }
+.feature p { color: var(--muted); }
+.num { display: inline-flex; width: 32px; height: 32px; border-radius: 50%; align-items: center; justify-content: center; background: var(--blue); color: #fff; font-weight: 700; font-size: .9rem; margin-bottom: 14px; }
+mark { background: linear-gradient(transparent 55%, rgba(255, 214, 102, .8) 55%); color: inherit; padding: 0 2px; }
+
+.thumbs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 36px; }
+.thumbs figure { border-radius: 12px; overflow: hidden; background: #fff; border: 1px solid var(--line); }
+.thumbs img { aspect-ratio: 16 / 9; object-fit: cover; width: 100%; }
+.thumbs figcaption { font-size: .78rem; color: var(--muted); padding: 8px 10px; }
+
+.code { background: var(--ink); color: #DCE8F7; border-radius: 16px; padding: 22px 24px; font: 13.5px/1.7 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; overflow-x: auto; margin-top: 28px; text-align: left; }
+.code .c { color: #8FA8C6; }
+
+footer { padding: 48px 0 64px; border-top: 1px solid var(--line); color: var(--muted); font-size: .9rem; }
+footer .wrap { display: flex; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+
+.reveal { opacity: 0; transform: translateY(18px); transition: opacity .7s ease, transform .7s ease; }
+.reveal.in { opacity: 1; transform: none; }
+
+@media (max-width: 860px) {
+  .hero .wrap, .feature, .feature.flip { grid-template-columns: 1fr; gap: 28px; }
+  .feature.flip .text { order: 0; }
+  .thumbs { grid-template-columns: repeat(2, 1fr); }
+  .links a.hide-sm { display: none; }
+  header.hero { padding-top: 44px; }
+}
+@media (max-width: 420px) {
+  .links { gap: 12px; }
+  .code { font-size: 11.5px; padding: 18px; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .btn { padding: 10px 16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .reveal { opacity: 1; transform: none; transition: none; }
+  .caret { animation: none; }
+  .btn, .btn:hover { transition: none; transform: none; }
+}
+</style>
+</head>
+<body>
+<div class="glow" aria-hidden="true"></div>
+
+<nav>
+  <div class="wrap">
+    <a class="brand" href="#top"><img src="img/niyoz-mark.png" alt="">niyoz</a>
+    <div class="links">
+      <a class="hide-sm" href="#demo">Demo</a>
+      <a class="hide-sm" href="#how">How it works</a>
+      <a class="hide-sm" href="#run">Run it</a>
+      <a class="btn" href="https://github.com/enzihub/niyoz">GitHub</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <div>
+      <span class="eyebrow">Open source · by Enzi Studio</span>
+      <h1>Your YouTube homepage, <em>read</em> in five minutes.</h1>
+      <p class="lede">Niyoz summarises the videos YouTube recommends to you and emails you one tidy digest at the hour you pick.</p>
+      <p class="typed" aria-live="polite"><span id="typed">Today: <b>modular synths</b>, <b>a $300 telescope</b> and <b>trail running</b>.</span><span class="caret" aria-hidden="true"></span></p>
+      <div class="cta">
+        <a class="btn primary" href="https://github.com/enzihub/niyoz">View the code</a>
+        <a class="btn" href="#demo">See it work</a>
+      </div>
+    </div>
+    <div class="shot"><div class="bar"><i></i><i></i><i></i></div><img src="img/email.png" alt="The Niyoz digest email for an invented user, opening with 'Saturn on a budget, modular synths and trail running'." width="1600" height="1013"></div>
+  </div>
+</header>
+
+<section id="demo" class="center">
+  <div class="wrap reveal">
+    <h2>One button, one email</h2>
+    <p class="sub">Press <b>Dopamine Hit</b> on the dashboard and Niyoz builds today's digest right away. This is the real app running on a laptop in demo mode.</p>
+    <figure class="demo">
+      <div class="shot"><img src="img/demo.gif" alt="Animated walkthrough: on the dashboard Maya presses Dopamine Hit, the digest is ready, she opens the email and scrolls through the summarised videos." width="880" height="557"></div>
+      <figcaption>Recorded headless with Playwright. The user, the channels and the videos are invented.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="feature reveal">
+      <div class="text">
+        <span class="num">1</span>
+        <h3>A digest worth opening</h3>
+        <p>Every email starts with a subject line and a one-line overview written for that day. Each video gets its thumbnail, channel, a short summary and <mark>three bullet points</mark>, so you can tell in seconds whether it is worth watching.</p>
+      </div>
+      <div class="shot"><img src="img/email-first.png" alt="The top of a digest email: headline, date, intro and the first video from the invented channel Voltage Garden." width="971" height="1119" loading="lazy"></div>
+    </div>
+
+    <div class="feature flip reveal">
+      <div class="text">
+        <span class="num">2</span>
+        <h3>Can't wait until tomorrow?</h3>
+        <p>After sign-up the dashboard says when your first email lands. The Dopamine Hit button builds one now and links straight to it.</p>
+      </div>
+      <div class="shot"><div class="bar"><i></i><i></i><i></i></div><img src="img/dashboard.png" alt="The dashboard: 'Hey Maya', the Dopamine Hit button and a card saying the digest is ready." width="1600" height="1013" loading="lazy"></div>
+    </div>
+
+    <div class="feature reveal">
+      <div class="text">
+        <span class="num">3</span>
+        <h3>Your hour, your time zone</h3>
+        <p>Sign in with Google, pick the hour and Niyoz saves your time zone with it. Free users get <mark>3 videos a day</mark>; the paid plan gets 12.</p>
+      </div>
+      <div class="shot"><div class="bar"><i></i><i></i><i></i></div><img src="img/profile-top.png" alt="The profile page for the invented user Maya Okafor with a delivery time of 7:00 AM in Europe/Lisbon." width="1600" height="779" loading="lazy"></div>
+    </div>
+  </div>
+</section>
+
+<section id="how" class="center">
+  <div class="wrap reveal">
+    <h2>How it works</h2>
+    <p class="sub">Every hour a scheduler finds who is due, reads their homepage, writes the summaries and queues the email for the hour they picked.</p>
+    <img src="img/how-it-works.png" alt="Four steps: pick an hour (Next.js, Clerk, Postgres), read the homepage (Celery beat, YouTube), summarise (OpenAI, Jinja2), deliver on time (Redis, Mailtrap, Stripe)." width="2000" height="940" loading="lazy" style="margin-top:32px">
+  </div>
+</section>
+
+<section class="center">
+  <div class="wrap reveal">
+    <h2>Invented videos, real pipeline</h2>
+    <p class="sub">Demo mode swaps YouTube for eight made-up videos from made-up channels, so you can run the whole flow with no accounts. These thumbnails are AI-generated scenes.</p>
+    <div class="thumbs">
+      <figure><img src="demo-thumbs/synth.jpg" alt="A modular synthesiser on a desk" loading="lazy"><figcaption>Voltage Garden</figcaption></figure>
+      <figure><img src="demo-thumbs/telescope.jpg" alt="A small telescope under a night sky" loading="lazy"><figcaption>Backyard Cosmos</figcaption></figure>
+      <figure><img src="demo-thumbs/run.jpg" alt="A runner on a coastal trail" loading="lazy"><figcaption>Coastline Miles</figcaption></figure>
+      <figure><img src="demo-thumbs/ramen.jpg" alt="A bowl of ramen" loading="lazy"><figcaption>Late Night Noodle Lab</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<section id="run" class="center">
+  <div class="wrap reveal">
+    <h2>Run it on your machine</h2>
+    <p class="sub">Python 3.12 with Poetry, Node.js 20 and Docker for Redis. No Google, OpenAI, Stripe or database account needed in demo mode.</p>
+<pre class="code"><span class="c"># Redis</span>
+docker run -d --name niyoz-redis -p 6379:6379 redis:alpine
+
+<span class="c"># Backend on :8000</span>
+cd core &amp;&amp; poetry install
+YOUTUBE_DEMO_MODE=true REDIS_URL=redis://127.0.0.1:6379/0 API_KEY=dev \
+DEMO_THUMB_BASE_URL=http://127.0.0.1:8000/demo/thumbs \
+poetry run uvicorn main:app --port 8000
+
+<span class="c"># Web app on :3000</span>
+cd web &amp;&amp; npm install
+NEXT_PUBLIC_DEMO_MODE=true NIYOZ_DEV_API_URL=http://127.0.0.1:8000 \
+NIYOZ_DEV_API_KEY=dev npm run dev</pre>
+    <p class="note">Then open 127.0.0.1:3000/dashboard and press Dopamine Hit. Full setup is in the README.</p>
+    <div class="cta" style="justify-content:center"><a class="btn primary" href="https://github.com/enzihub/niyoz#quick-start">Read the quick start</a></div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>Built by Enzi Studio in 2025, shared as-is. MIT licence.</span>
+    <span><a href="https://github.com/enzihub/niyoz">github.com/enzihub/niyoz</a></span>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var els = document.querySelectorAll('.reveal');
+  if (reduce || !('IntersectionObserver' in window)) {
+    els.forEach(function (e) { e.classList.add('in'); });
+  } else {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); } });
+    }, { threshold: 0.12 });
+    els.forEach(function (e) { io.observe(e); });
+  }
+  if (reduce) return;
+  var lines = [
+    'Today: <b>modular synths</b>, <b>a $300 telescope</b> and <b>trail running</b>.',
+    'Today: <b>Sunday sourdough</b>, <b>weeknight ramen</b> and <b>trail running</b>.',
+    'Today: <b>raised beds</b>, <b>a flow trail</b> and <b>a weekend cabin</b>.'
+  ];
+  var el = document.getElementById('typed'), i = 0;
+  function plain(h) { var d = document.createElement('div'); d.innerHTML = h; return d.textContent; }
+  function type(line) {
+    var text = plain(line), n = 0;
+    (function step() {
+      n++;
+      el.textContent = text.slice(0, n);
+      if (n < text.length) setTimeout(step, 32);
+      else { el.innerHTML = line; setTimeout(next, 2600); }
+    })();
+  }
+  function next() { i = (i + 1) % lines.length; type(lines[i]); }
+  setTimeout(next, 2600);
+})();
+</script>
+</body>
+</html>

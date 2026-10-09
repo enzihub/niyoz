@@ -1,0 +1,32 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+@font-face{font-family:"Inter";src:url(../../docs/fonts/inter-var.woff2) format("woff2");font-weight:100 900}
+@font-face{font-family:"Instrument Serif";src:url(../../docs/fonts/instrument-serif-400.woff2) format("woff2")}
+@font-face{font-family:"Instrument Serif";font-style:italic;src:url(../../docs/fonts/instrument-serif-400-italic.woff2) format("woff2")}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:transparent}
+body{font-family:Inter,sans-serif;color:#0B2545;-webkit-font-smoothing:antialiased}
+.card{position:relative;overflow:hidden;border-radius:28px;background:#EAF7FF;
+ background-image:radial-gradient(900px 500px at 85% 10%,rgba(0,89,255,.16),transparent 60%),radial-gradient(700px 420px at 0% 100%,rgba(255,214,102,.28),transparent 60%);}
+.brand{display:flex;align-items:center;gap:10px;font-weight:750;font-size:26px;letter-spacing:-.02em;color:#0D4785}
+.brand img{width:34px;height:auto}
+.serif{font-family:"Instrument Serif",serif;font-weight:400;letter-spacing:-.01em}
+.shot{border-radius:14px;overflow:hidden;background:#fff;box-shadow:0 1px 0 rgba(11,37,69,.06),0 24px 60px -18px rgba(11,37,69,.35);border:1px solid rgba(11,37,69,.08)}
+.shot .bar{height:26px;background:#F3F6FA;border-bottom:1px solid #E3E9F1;display:flex;align-items:center;gap:6px;padding:0 12px}
+.shot .bar i{width:9px;height:9px;border-radius:50%;background:#D5DDE7;display:block}
+.shot img{display:block;width:100%}
+
+.card{width:1000px;height:640px;padding:40px}
+.grid{display:grid;grid-template-columns:1.12fr 1fr;grid-template-rows:1fr 1fr;gap:22px;height:100%}
+.cell{display:flex;flex-direction:column;gap:9px;min-height:0}
+.cell .shot{flex:1;min-height:0}
+.cell .shot img{height:100%;object-fit:cover;object-position:top center}
+.big .shot{background:#fff}
+.big .shot img{object-fit:contain;object-position:top center}
+.big{grid-row:1 / span 2}
+.lbl{font-size:13px;font-weight:650;color:#0D4785;letter-spacing:.01em}
+.lbl b{color:#0059FF;font-weight:700;margin-right:6px}
+</style></head><body><div class="card"><div class="grid">
+<div class="cell big"><div class="lbl"><b>01</b>Your daily email</div><div class="shot"><img src="../../docs/img/email-first.png"></div></div>
+<div class="cell"><div class="lbl"><b>02</b>Want it now? One click</div><div class="shot"><img src="../../docs/img/dashboard.png"></div></div>
+<div class="cell"><div class="lbl"><b>03</b>Set your delivery hour</div><div class="shot"><img src="../../docs/img/profile-top.png"></div></div>
+</div></div></body></html>
